@@ -15,7 +15,7 @@ URL-safe Base64 encoding with optional padding and JSON helpers
 Add to your Gemfile:
 
 ```ruby
-gem 'philiprehberger-base64_url'
+gem "philiprehberger-base64_url"
 ```
 
 Or install directly:
