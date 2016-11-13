@@ -27,7 +27,7 @@ gem install philiprehberger-base64_url
 ## Usage
 
 ```ruby
-require 'philiprehberger/base64_url'
+require "philiprehberger/base64_url"
 
 encoded = Philiprehberger::Base64Url.encode('hello world')
 # => "aGVsbG8gd29ybGQ"
