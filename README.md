@@ -3,6 +3,7 @@
 [![Tests](https://github.com/philiprehberger/rb-base64-url/actions/workflows/ci.yml/badge.svg)](https://github.com/philiprehberger/rb-base64-url/actions/workflows/ci.yml)
 [![Gem Version](https://badge.fury.io/rb/philiprehberger-base64_url.svg)](https://rubygems.org/gems/philiprehberger-base64_url)
 [![License](https://img.shields.io/github/license/philiprehberger/rb-base64-url)](LICENSE)
+[![Sponsor](https://img.shields.io/badge/sponsor-GitHub%20Sponsors-ec6cb9)](https://github.com/sponsors/philiprehberger)
 
 URL-safe Base64 encoding with optional padding and JSON helpers
 
