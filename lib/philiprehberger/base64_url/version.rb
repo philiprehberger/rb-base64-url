@@ -2,6 +2,6 @@
 
 module Philiprehberger
   module Base64Url
-    VERSION = '0.1.4'
+    VERSION = '0.1.5'
   end
 end

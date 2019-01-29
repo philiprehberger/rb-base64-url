@@ -2,8 +2,7 @@
 
 [![Tests](https://github.com/philiprehberger/rb-base64-url/actions/workflows/ci.yml/badge.svg)](https://github.com/philiprehberger/rb-base64-url/actions/workflows/ci.yml)
 [![Gem Version](https://badge.fury.io/rb/philiprehberger-base64_url.svg)](https://rubygems.org/gems/philiprehberger-base64_url)
-[![License](https://img.shields.io/github/license/philiprehberger/rb-base64-url)](LICENSE)
-[![Sponsor](https://img.shields.io/badge/sponsor-GitHub%20Sponsors-ec6cb9)](https://github.com/sponsors/philiprehberger)
+[![Last updated](https://img.shields.io/github/last-commit/philiprehberger/rb-base64-url)](https://github.com/philiprehberger/rb-base64-url/commits/main)
 
 URL-safe Base64 encoding with optional padding and JSON helpers
 
@@ -64,6 +63,24 @@ bundle exec rspec
 bundle exec rubocop
 ```
 
+## Support
+
+If you find this project useful:
+
+⭐ [Star the repo](https://github.com/philiprehberger/rb-base64-url)
+
+🐛 [Report issues](https://github.com/philiprehberger/rb-base64-url/issues?q=is%3Aissue+is%3Aopen+label%3Abug)
+
+💡 [Suggest features](https://github.com/philiprehberger/rb-base64-url/issues?q=is%3Aissue+is%3Aopen+label%3Aenhancement)
+
+❤️ [Sponsor development](https://github.com/sponsors/philiprehberger)
+
+🌐 [All Open Source Projects](https://philiprehberger.com/open-source-packages)
+
+💻 [GitHub Profile](https://github.com/philiprehberger)
+
+🔗 [LinkedIn Profile](https://www.linkedin.com/in/philiprehberger)
+
 ## License
 
-MIT
+[MIT](LICENSE)
