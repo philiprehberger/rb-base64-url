@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
 
   spec.summary = 'URL-safe Base64 encoding with optional padding and JSON helpers'
   spec.description = 'URL-safe Base64 encoding and decoding using Base64.urlsafe_encode64/decode64 ' \
-                       'with no padding by default and convenience methods for JSON round-tripping.'
+                     'with no padding by default and convenience methods for JSON round-tripping.'
   spec.homepage = 'https://philiprehberger.com/open-source-packages/ruby/philiprehberger-base64_url'
   spec.license = 'MIT'
 
