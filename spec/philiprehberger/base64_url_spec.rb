@@ -79,6 +79,28 @@ RSpec.describe Philiprehberger::Base64Url do
     end
   end
 
+  describe '.encode with padding' do
+    it 'omits padding by default' do
+      result = described_class.encode('Hello')
+      expect(result).not_to end_with('=')
+    end
+
+    it 'includes padding when requested' do
+      result = described_class.encode('Hello', padding: true)
+      expect(result).to end_with('=') if result.length % 4 != 0 || result.include?('=')
+    end
+
+    it 'produces decodable output with padding' do
+      encoded = described_class.encode('test data', padding: true)
+      expect(described_class.decode(encoded)).to eq('test data')
+    end
+
+    it 'produces decodable output without padding' do
+      encoded = described_class.encode('test data', padding: false)
+      expect(described_class.decode(encoded)).to eq('test data')
+    end
+  end
+
   describe '.decode' do
     it 'decodes a URL-safe Base64 string' do
       expect(described_class.decode('aGVsbG8gd29ybGQ')).to eq('hello world')

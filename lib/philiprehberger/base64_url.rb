@@ -8,12 +8,13 @@ module Philiprehberger
   module Base64Url
     class Error < StandardError; end
 
-    # Encode data to URL-safe Base64 without padding
+    # Encode data to URL-safe Base64
     #
     # @param data [String] the data to encode
+    # @param padding [Boolean] whether to include padding (default: false)
     # @return [String] URL-safe Base64 encoded string
-    def self.encode(data)
-      Base64.urlsafe_encode64(data, padding: false)
+    def self.encode(data, padding: false)
+      Base64.urlsafe_encode64(data, padding: padding)
     end
 
     # Decode URL-safe Base64 data
