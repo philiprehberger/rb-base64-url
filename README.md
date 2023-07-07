@@ -45,6 +45,13 @@ Philiprehberger::Base64Url.encode("Hello")                  # => "SGVsbG8" (no p
 Philiprehberger::Base64Url.encode("Hello", padding: true)    # => "SGVsbG8=" (with padding)
 ```
 
+### Validation
+
+```ruby
+Philiprehberger::Base64Url.valid?("aGVsbG8")   # => true
+Philiprehberger::Base64Url.valid?("!!!")        # => false
+```
+
 ### JSON Helpers
 
 ```ruby
@@ -63,6 +70,7 @@ payload = Philiprehberger::Base64Url.decode_json(token)
 | `.decode(data)` | Decode a URL-safe Base64 string |
 | `.encode_json(hash)` | Encode a hash as JSON then URL-safe Base64 |
 | `.decode_json(str)` | Decode a URL-safe Base64 string and parse as JSON |
+| `.valid?(data)` | Check if a string is valid URL-safe Base64 |
 
 ## Development
 

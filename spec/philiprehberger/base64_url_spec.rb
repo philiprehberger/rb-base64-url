@@ -201,6 +201,35 @@ RSpec.describe Philiprehberger::Base64Url do
     end
   end
 
+  describe '.valid?' do
+    it 'returns true for a valid Base64 string' do
+      encoded = described_class.encode('hello world')
+      expect(described_class.valid?(encoded)).to be true
+    end
+
+    it 'returns true for an empty string' do
+      expect(described_class.valid?('')).to be true
+    end
+
+    it 'returns true for a padded Base64 string' do
+      expect(described_class.valid?('dGVzdA==')).to be true
+    end
+
+    it 'returns false for invalid Base64' do
+      expect(described_class.valid?('!!!')).to be false
+    end
+
+    it 'returns true for Base64 encoded JSON' do
+      encoded = described_class.encode_json({ 'key' => 'value' })
+      expect(described_class.valid?(encoded)).to be true
+    end
+
+    it 'returns true for URL-safe characters' do
+      encoded = described_class.encode("\xFF\xFE\xFD")
+      expect(described_class.valid?(encoded)).to be true
+    end
+  end
+
   describe 'roundtrip' do
     it 'roundtrips simple strings' do
       %w[hello test 123 foo-bar].each do |str|

@@ -46,5 +46,16 @@ module Philiprehberger
     rescue JSON::ParserError => e
       raise Error, "invalid JSON: #{e.message}"
     end
+
+    # Check if a string is valid URL-safe Base64
+    #
+    # @param data [String] the string to validate
+    # @return [Boolean] true if valid, false otherwise
+    def self.valid?(data)
+      decode(data)
+      true
+    rescue Error
+      false
+    end
   end
 end
