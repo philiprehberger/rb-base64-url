@@ -57,5 +57,56 @@ module Philiprehberger
     rescue Error
       false
     end
+
+    # Constant-time comparison of two Base64 strings.
+    #
+    # Prevents timing attacks by always comparing all bytes.
+    #
+    # @param a [String] first string
+    # @param b [String] second string
+    # @return [Boolean] true if strings are equal
+    def self.secure_compare(a, b)
+      return false unless a.bytesize == b.bytesize
+
+      left = a.unpack('C*')
+      right = b.unpack('C*')
+      result = 0
+
+      left.each_with_index { |byte, i| result |= byte ^ right[i] }
+
+      result.zero?
+    end
+
+    # Calculate the decoded byte length from an encoded string without decoding.
+    #
+    # @param encoded [String] URL-safe Base64 string
+    # @return [Integer] number of bytes in the decoded output
+    def self.byte_length(encoded)
+      return 0 if encoded.nil? || encoded.empty?
+
+      stripped = encoded.delete('=')
+      padding = (4 - (stripped.length % 4)) % 4
+      ((stripped.length + padding) * 3 / 4) - padding
+    end
+
+    # Encode a file's contents to URL-safe Base64.
+    #
+    # @param path [String] path to the file
+    # @param padding [Boolean] whether to include padding (default: false)
+    # @return [String] URL-safe Base64 encoded contents
+    # @raise [Errno::ENOENT] if the file does not exist
+    def self.encode_file(path, padding: false)
+      encode(File.binread(path), padding: padding)
+    end
+
+    # Decode a URL-safe Base64 string and write to a file.
+    #
+    # @param encoded [String] URL-safe Base64 string
+    # @param path [String] output file path
+    # @return [void]
+    # @raise [Error] if the string cannot be decoded
+    def self.decode_to_file(encoded, path)
+      File.binwrite(path, decode(encoded))
+    end
   end
 end

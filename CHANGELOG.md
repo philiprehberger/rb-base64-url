@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.4.0] - 2026-04-09
+
+### Added
+- `secure_compare(a, b)` for constant-time string comparison (timing-attack safe)
+- `byte_length(encoded)` to calculate decoded byte count without decoding
+- `encode_file(path, padding: false)` to encode a file's contents
+- `decode_to_file(encoded, path)` to decode and write to a file
+
 ## [0.3.0] - 2026-04-04
 
 ### Added

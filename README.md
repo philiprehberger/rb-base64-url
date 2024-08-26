@@ -62,6 +62,28 @@ payload = Philiprehberger::Base64Url.decode_json(token)
 # => {"user_id"=>42, "role"=>"admin"}
 ```
 
+### Constant-Time Comparison
+
+```ruby
+token_a = Philiprehberger::Base64Url.encode("secret")
+token_b = params[:token]
+
+Philiprehberger::Base64Url.secure_compare(token_a, token_b) # => true/false
+```
+
+### Decoded Size
+
+```ruby
+Philiprehberger::Base64Url.byte_length("aGVsbG8gd29ybGQ") # => 11
+```
+
+### File Helpers
+
+```ruby
+encoded = Philiprehberger::Base64Url.encode_file("image.png")
+Philiprehberger::Base64Url.decode_to_file(encoded, "copy.png")
+```
+
 ## API
 
 | Method | Description |
@@ -71,6 +93,10 @@ payload = Philiprehberger::Base64Url.decode_json(token)
 | `.encode_json(hash)` | Encode a hash as JSON then URL-safe Base64 |
 | `.decode_json(str)` | Decode a URL-safe Base64 string and parse as JSON |
 | `.valid?(data)` | Check if a string is valid URL-safe Base64 |
+| `.secure_compare(a, b)` | Constant-time comparison of two strings |
+| `.byte_length(encoded)` | Calculate decoded byte count without decoding |
+| `.encode_file(path, padding: false)` | Encode a file's contents to URL-safe Base64 |
+| `.decode_to_file(encoded, path)` | Decode and write to a file |
 
 ## Development
 
