@@ -321,6 +321,80 @@ RSpec.describe Philiprehberger::Base64Url do
     end
   end
 
+  describe '.to_std' do
+    it 'replaces - with + and _ with /' do
+      expect(described_class.to_std('a-b_c-d_e')).to eq('a+b/c+d/e===')
+    end
+
+    it 'adds no padding when length is already a multiple of 4' do
+      expect(described_class.to_std('abcd')).to eq('abcd')
+    end
+
+    it 'adds three = when length mod 4 is 1' do
+      expect(described_class.to_std('a')).to eq('a===')
+    end
+
+    it 'adds two = when length mod 4 is 2' do
+      expect(described_class.to_std('ab')).to eq('ab==')
+    end
+
+    it 'adds one = when length mod 4 is 3' do
+      expect(described_class.to_std('abc')).to eq('abc=')
+    end
+
+    it 'round trips input with no special characters and no padding needed' do
+      expect(described_class.to_std('abcd')).to eq('abcd')
+    end
+
+    it 'handles already-padded input by leaving padding alone when length is multiple of 4' do
+      expect(described_class.to_std('SGVsbG8=')).to eq('SGVsbG8=')
+    end
+
+    it 'handles empty string' do
+      expect(described_class.to_std('')).to eq('')
+    end
+
+    it 'produces output decodable by standard Base64' do
+      encoded = described_class.encode("\xFB\xFF\xFE")
+      std = described_class.to_std(encoded)
+      expect(Base64.decode64(std).bytes).to eq([0xFB, 0xFF, 0xFE])
+    end
+  end
+
+  describe '.from_std' do
+    it 'replaces + with - and / with _' do
+      expect(described_class.from_std('a+b/c+d/e')).to eq('a-b_c-d_e')
+    end
+
+    it 'strips trailing = padding' do
+      expect(described_class.from_std('SGVsbG8=')).to eq('SGVsbG8')
+    end
+
+    it 'strips multiple = characters' do
+      expect(described_class.from_std('dGVzdA==')).to eq('dGVzdA')
+    end
+
+    it 'leaves input without + / or = unchanged' do
+      expect(described_class.from_std('SGVsbG8')).to eq('SGVsbG8')
+    end
+
+    it 'handles empty string' do
+      expect(described_class.from_std('')).to eq('')
+    end
+
+    it 'converts both substitutions and strips padding together' do
+      expect(described_class.from_std('a+b/c==')).to eq('a-b_c')
+    end
+  end
+
+  describe 'to_std / from_std round-trip' do
+    it 'round trips when input has no trailing =' do
+      ['SGVsbG8', 'a-b_c', 'abcd', 'a', 'ab', 'abc', described_class.encode("\xFF\xFE\xFD")].each do |input|
+        expect(described_class.from_std(described_class.to_std(input))).to eq(input)
+      end
+    end
+  end
+
   describe 'roundtrip' do
     it 'roundtrips simple strings' do
       %w[hello test 123 foo-bar].each do |str|

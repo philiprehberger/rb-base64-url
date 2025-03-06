@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.5.0] - 2026-04-15
+
+### Added
+- `to_std(data)` to convert a URL-safe Base64 string to a standard Base64 string (adds `=` padding and swaps `-_` for `+/`)
+- `from_std(data)` to convert a standard Base64 string to a URL-safe Base64 string (strips `=` padding and swaps `+/` for `-_`)
+
 ## [0.4.0] - 2026-04-09
 
 ### Added

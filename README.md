@@ -84,6 +84,16 @@ encoded = Philiprehberger::Base64Url.encode_file("image.png")
 Philiprehberger::Base64Url.decode_to_file(encoded, "copy.png")
 ```
 
+### Convert between URL-safe and standard Base64
+
+```ruby
+Philiprehberger::Base64Url.to_std("SGVsbG8")    # => "SGVsbG8="
+Philiprehberger::Base64Url.to_std("a-b_c")       # => "a+b/c==="
+
+Philiprehberger::Base64Url.from_std("SGVsbG8=")  # => "SGVsbG8"
+Philiprehberger::Base64Url.from_std("a+b/c==")   # => "a-b_c"
+```
+
 ## API
 
 | Method | Description |
@@ -97,6 +107,8 @@ Philiprehberger::Base64Url.decode_to_file(encoded, "copy.png")
 | `.byte_length(encoded)` | Calculate decoded byte count without decoding |
 | `.encode_file(path, padding: false)` | Encode a file's contents to URL-safe Base64 |
 | `.decode_to_file(encoded, path)` | Decode and write to a file |
+| `.to_std(data)` | Convert URL-safe Base64 to standard Base64 (adds `=` padding, swaps `-_` for `+/`) |
+| `.from_std(data)` | Convert standard Base64 to URL-safe Base64 (strips `=` padding, swaps `+/` for `-_`) |
 
 ## Development
 
