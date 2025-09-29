@@ -395,6 +395,116 @@ RSpec.describe Philiprehberger::Base64Url do
     end
   end
 
+  describe '.encode_uuid' do
+    it 'encodes a canonical UUID to exactly 22 characters' do
+      result = described_class.encode_uuid('11111111-2222-3333-4444-555555555555')
+      expect(result.length).to eq(22)
+    end
+
+    it 'encodes the nil UUID' do
+      result = described_class.encode_uuid('00000000-0000-0000-0000-000000000000')
+      expect(result.length).to eq(22)
+      expect(described_class.decode_uuid(result)).to eq('00000000-0000-0000-0000-000000000000')
+    end
+
+    it 'encodes the max UUID' do
+      result = described_class.encode_uuid('ffffffff-ffff-ffff-ffff-ffffffffffff')
+      expect(result.length).to eq(22)
+      expect(described_class.decode_uuid(result)).to eq('ffffffff-ffff-ffff-ffff-ffffffffffff')
+    end
+
+    it 'accepts mixed-case input' do
+      uuid = 'AbCdEf01-2345-6789-ABCD-ef0123456789'
+      result = described_class.encode_uuid(uuid)
+      expect(described_class.decode_uuid(result)).to eq(uuid.downcase)
+    end
+
+    it 'produces URL-safe output (no + or /)' do
+      result = described_class.encode_uuid('ffffffff-ffff-ffff-ffff-ffffffffffff')
+      expect(result).not_to match(%r{[+/=]})
+    end
+
+    it 'raises ArgumentError on wrong length' do
+      expect { described_class.encode_uuid('abc') }.to raise_error(ArgumentError, /invalid UUID/)
+    end
+
+    it 'raises ArgumentError on non-hex characters' do
+      expect do
+        described_class.encode_uuid('zzzzzzzz-zzzz-zzzz-zzzz-zzzzzzzzzzzz')
+      end.to raise_error(ArgumentError, /invalid UUID/)
+    end
+
+    it 'raises ArgumentError on missing dashes' do
+      expect do
+        described_class.encode_uuid('00000000000000000000000000000000')
+      end.to raise_error(ArgumentError, /invalid UUID/)
+    end
+
+    it 'raises ArgumentError on non-String input' do
+      expect { described_class.encode_uuid(nil) }.to raise_error(ArgumentError, /must be a String/)
+    end
+  end
+
+  describe '.decode_uuid' do
+    it 'round-trips the nil UUID' do
+      uuid = '00000000-0000-0000-0000-000000000000'
+      expect(described_class.decode_uuid(described_class.encode_uuid(uuid))).to eq(uuid)
+    end
+
+    it 'round-trips the max UUID' do
+      uuid = 'ffffffff-ffff-ffff-ffff-ffffffffffff'
+      expect(described_class.decode_uuid(described_class.encode_uuid(uuid))).to eq(uuid)
+    end
+
+    it 'round-trips a typical v4 UUID' do
+      uuid = 'f47ac10b-58cc-4372-a567-0e02b2c3d479'
+      expect(described_class.decode_uuid(described_class.encode_uuid(uuid))).to eq(uuid)
+    end
+
+    it 'round-trips multiple canonical UUIDs' do
+      uuids = %w[
+        00000000-0000-0000-0000-000000000000
+        ffffffff-ffff-ffff-ffff-ffffffffffff
+        f47ac10b-58cc-4372-a567-0e02b2c3d479
+        123e4567-e89b-12d3-a456-426614174000
+        01020304-0506-0708-090a-0b0c0d0e0f10
+      ]
+      uuids.each do |uuid|
+        expect(described_class.decode_uuid(described_class.encode_uuid(uuid))).to eq(uuid)
+      end
+    end
+
+    it 'returns lowercase canonical form for mixed-case input' do
+      uuid = 'AbCdEf01-2345-6789-ABCD-ef0123456789'
+      encoded = described_class.encode_uuid(uuid)
+      expect(described_class.decode_uuid(encoded)).to eq(uuid.downcase)
+    end
+
+    it 'accepts input with padding' do
+      uuid = 'f47ac10b-58cc-4372-a567-0e02b2c3d479'
+      encoded = described_class.encode_uuid(uuid)
+      padded = "#{encoded}=="
+      expect(described_class.decode_uuid(padded)).to eq(uuid)
+    end
+
+    it 'raises ArgumentError when decoded length is not 16 bytes' do
+      short = described_class.encode('too short')
+      expect { described_class.decode_uuid(short) }.to raise_error(ArgumentError, /16 decoded bytes/)
+    end
+
+    it 'raises ArgumentError on empty string' do
+      expect { described_class.decode_uuid('') }.to raise_error(ArgumentError, /16 decoded bytes/)
+    end
+
+    it 'raises ArgumentError on non-String input' do
+      expect { described_class.decode_uuid(nil) }.to raise_error(ArgumentError, /must be a String/)
+    end
+
+    it 'raises ArgumentError on malformed Base64' do
+      expect { described_class.decode_uuid('!!!') }.to raise_error(ArgumentError, /invalid encoded UUID/)
+    end
+  end
+
   describe 'roundtrip' do
     it 'roundtrips simple strings' do
       %w[hello test 123 foo-bar].each do |str|

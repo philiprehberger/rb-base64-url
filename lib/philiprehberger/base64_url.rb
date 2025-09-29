@@ -132,5 +132,49 @@ module Philiprehberger
     def self.from_std(data)
       data.tr('+/', '-_').delete('=')
     end
+
+    UUID_REGEX = /\A[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\z/i
+    private_constant :UUID_REGEX
+
+    # Encode a canonical UUID as a compact 22-character URL-safe Base64 string.
+    #
+    # Strips dashes, packs the 32 hex characters into 16 binary bytes, then
+    # URL-safe Base64 encodes without padding. Accepts mixed-case input.
+    #
+    # @param uuid [String] canonical UUID ("xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx")
+    # @return [String] 22-character URL-safe Base64 string (no padding)
+    # @raise [ArgumentError] if the input is not a canonical UUID
+    def self.encode_uuid(uuid)
+      raise ArgumentError, 'uuid must be a String' unless uuid.is_a?(String)
+      raise ArgumentError, "invalid UUID: #{uuid.inspect}" unless UUID_REGEX.match?(uuid)
+
+      bytes = [uuid.delete('-')].pack('H*')
+      Base64.urlsafe_encode64(bytes, padding: false)
+    end
+
+    # Decode a 22-character URL-safe Base64 string back to a canonical UUID.
+    #
+    # Accepts input with or without `=` padding. Returns a lowercase
+    # canonical UUID ("xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx").
+    #
+    # @param encoded [String] 22-character URL-safe Base64 string
+    # @return [String] canonical lowercase UUID
+    # @raise [ArgumentError] if the decoded byte length is not exactly 16
+    def self.decode_uuid(encoded)
+      raise ArgumentError, 'encoded must be a String' unless encoded.is_a?(String)
+
+      begin
+        bytes = Base64.urlsafe_decode64(encoded)
+      rescue ArgumentError => e
+        raise ArgumentError, "invalid encoded UUID: #{e.message}"
+      end
+
+      unless bytes.bytesize == 16
+        raise ArgumentError, "invalid encoded UUID: expected 16 decoded bytes, got #{bytes.bytesize}"
+      end
+
+      hex = bytes.unpack1('H*')
+      "#{hex[0, 8]}-#{hex[8, 4]}-#{hex[12, 4]}-#{hex[16, 4]}-#{hex[20, 12]}"
+    end
   end
 end
