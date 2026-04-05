@@ -36,6 +36,15 @@ decoded = Philiprehberger::Base64Url.decode(encoded)
 # => "hello world"
 ```
 
+### Padding Control
+
+```ruby
+require "philiprehberger/base64_url"
+
+Philiprehberger::Base64Url.encode("Hello")                  # => "SGVsbG8" (no padding)
+Philiprehberger::Base64Url.encode("Hello", padding: true)    # => "SGVsbG8=" (with padding)
+```
+
 ### JSON Helpers
 
 ```ruby
@@ -50,7 +59,7 @@ payload = Philiprehberger::Base64Url.decode_json(token)
 
 | Method | Description |
 |--------|-------------|
-| `.encode(data)` | Encode data to URL-safe Base64 without padding |
+| `.encode(data, padding: false)` | Encode data to URL-safe Base64 (optional padding) |
 | `.decode(data)` | Decode a URL-safe Base64 string |
 | `.encode_json(hash)` | Encode a hash as JSON then URL-safe Base64 |
 | `.decode_json(str)` | Decode a URL-safe Base64 string and parse as JSON |
