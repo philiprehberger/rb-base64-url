@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
+require 'tempfile'
 
 RSpec.describe Philiprehberger::Base64Url do
   it 'has a version number' do
@@ -227,6 +228,96 @@ RSpec.describe Philiprehberger::Base64Url do
     it 'returns true for URL-safe characters' do
       encoded = described_class.encode("\xFF\xFE\xFD")
       expect(described_class.valid?(encoded)).to be true
+    end
+  end
+
+  describe '.secure_compare' do
+    it 'returns true for identical strings' do
+      a = described_class.encode('secret token')
+      expect(described_class.secure_compare(a, a)).to be true
+    end
+
+    it 'returns false for different strings' do
+      a = described_class.encode('token_a')
+      b = described_class.encode('token_b')
+      expect(described_class.secure_compare(a, b)).to be false
+    end
+
+    it 'returns false for different lengths' do
+      expect(described_class.secure_compare('short', 'much longer')).to be false
+    end
+
+    it 'returns true for empty strings' do
+      expect(described_class.secure_compare('', '')).to be true
+    end
+  end
+
+  describe '.byte_length' do
+    it 'returns the decoded byte length' do
+      encoded = described_class.encode('hello world')
+      expect(described_class.byte_length(encoded)).to eq(11)
+    end
+
+    it 'returns 0 for empty string' do
+      expect(described_class.byte_length('')).to eq(0)
+    end
+
+    it 'returns 0 for nil' do
+      expect(described_class.byte_length(nil)).to eq(0)
+    end
+
+    it 'handles padded input' do
+      encoded = described_class.encode('test', padding: true)
+      expect(described_class.byte_length(encoded)).to eq(4)
+    end
+
+    it 'handles unpadded input' do
+      encoded = described_class.encode('test', padding: false)
+      expect(described_class.byte_length(encoded)).to eq(4)
+    end
+  end
+
+  describe '.encode_file' do
+    it 'encodes a file to URL-safe Base64' do
+      file = Tempfile.new('test')
+      file.write('hello world')
+      file.close
+
+      result = described_class.encode_file(file.path)
+      expect(described_class.decode(result)).to eq('hello world')
+    ensure
+      file&.unlink
+    end
+
+    it 'raises Errno::ENOENT for missing files' do
+      expect { described_class.encode_file('/nonexistent/file') }.to raise_error(Errno::ENOENT)
+    end
+  end
+
+  describe '.decode_to_file' do
+    it 'decodes and writes to a file' do
+      file = Tempfile.new('test')
+      file.close
+
+      encoded = described_class.encode('decoded content')
+      described_class.decode_to_file(encoded, file.path)
+
+      expect(File.read(file.path)).to eq('decoded content')
+    ensure
+      file&.unlink
+    end
+
+    it 'handles binary data' do
+      file = Tempfile.new('test')
+      file.close
+
+      binary = "\x00\x01\xFF"
+      encoded = described_class.encode(binary)
+      described_class.decode_to_file(encoded, file.path)
+
+      expect(File.binread(file.path).bytes).to eq(binary.bytes)
+    ensure
+      file&.unlink
     end
   end
 
