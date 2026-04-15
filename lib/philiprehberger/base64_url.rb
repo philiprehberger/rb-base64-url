@@ -108,5 +108,29 @@ module Philiprehberger
     def self.decode_to_file(encoded, path)
       File.binwrite(path, decode(encoded))
     end
+
+    # Convert a URL-safe Base64 string to a standard Base64 string.
+    #
+    # Replaces `-` with `+`, `_` with `/`, and adds `=` padding so the length
+    # is a multiple of 4. Does not validate or decode the input.
+    #
+    # @param data [String] URL-safe Base64 string
+    # @return [String] standard Base64 string
+    def self.to_std(data)
+      converted = data.tr('-_', '+/')
+      padding = (4 - (converted.length % 4)) % 4
+      converted + ('=' * padding)
+    end
+
+    # Convert a standard Base64 string to a URL-safe Base64 string.
+    #
+    # Replaces `+` with `-`, `/` with `_`, and strips trailing `=` padding.
+    # Does not validate or decode the input.
+    #
+    # @param data [String] standard Base64 string
+    # @return [String] URL-safe Base64 string
+    def self.from_std(data)
+      data.tr('+/', '-_').delete('=')
+    end
   end
 end
