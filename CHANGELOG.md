@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.6.0] - 2026-04-16
+
+### Added
+- `encode_uuid` and `decode_uuid` for compact 22-character base64url UUID representation
+
 ## [0.5.0] - 2026-04-15
 
 ### Added

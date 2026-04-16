@@ -94,6 +94,19 @@ Philiprehberger::Base64Url.from_std("SGVsbG8=")  # => "SGVsbG8"
 Philiprehberger::Base64Url.from_std("a+b/c==")   # => "a-b_c"
 ```
 
+### Compact UUIDs
+
+Shorten a 36-character canonical UUID into a 22-character URL-safe Base64 string
+(no padding) and decode back to the original canonical form.
+
+```ruby
+token = Philiprehberger::Base64Url.encode_uuid("f47ac10b-58cc-4372-a567-0e02b2c3d479")
+# => "9HrBC1jMQ3KlZw4Cssx0eQ" (22 chars)
+
+Philiprehberger::Base64Url.decode_uuid(token)
+# => "f47ac10b-58cc-4372-a567-0e02b2c3d479"
+```
+
 ## API
 
 | Method | Description |
@@ -109,6 +122,8 @@ Philiprehberger::Base64Url.from_std("a+b/c==")   # => "a-b_c"
 | `.decode_to_file(encoded, path)` | Decode and write to a file |
 | `.to_std(data)` | Convert URL-safe Base64 to standard Base64 (adds `=` padding, swaps `-_` for `+/`) |
 | `.from_std(data)` | Convert standard Base64 to URL-safe Base64 (strips `=` padding, swaps `+/` for `-_`) |
+| `.encode_uuid(uuid)` | Encode a canonical UUID as a compact 22-character URL-safe Base64 string |
+| `.decode_uuid(encoded)` | Decode a 22-character URL-safe Base64 string back to a canonical lowercase UUID |
 
 ## Development
 
