@@ -94,6 +94,16 @@ Philiprehberger::Base64Url.from_std("SGVsbG8=")  # => "SGVsbG8"
 Philiprehberger::Base64Url.from_std("a+b/c==")   # => "a-b_c"
 ```
 
+### Random token
+
+```ruby
+Philiprehberger::Base64Url.random
+# => "Xk8...k2Q" (43-char URL-safe Base64 of 32 random bytes, no padding)
+
+Philiprehberger::Base64Url.random(bytes: 16)
+# => 22-char URL-safe Base64 token
+```
+
 ### Compact UUIDs
 
 Shorten a 36-character canonical UUID into a 22-character URL-safe Base64 string
@@ -112,6 +122,7 @@ Philiprehberger::Base64Url.decode_uuid(token)
 | Method | Description |
 |--------|-------------|
 | `.encode(data, padding: false)` | Encode data to URL-safe Base64 (optional padding) |
+| `Base64Url.random(bytes: 32)` | Generate a URL-safe Base64 random token |
 | `.decode(data)` | Decode a URL-safe Base64 string |
 | `.encode_json(hash)` | Encode a hash as JSON then URL-safe Base64 |
 | `.decode_json(str)` | Decode a URL-safe Base64 string and parse as JSON |

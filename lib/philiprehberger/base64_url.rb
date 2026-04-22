@@ -2,6 +2,7 @@
 
 require 'base64'
 require 'json'
+require 'securerandom'
 require_relative 'base64_url/version'
 
 module Philiprehberger
@@ -97,6 +98,21 @@ module Philiprehberger
     # @raise [Errno::ENOENT] if the file does not exist
     def self.encode_file(path, padding: false)
       encode(File.binread(path), padding: padding)
+    end
+
+    # Generate a URL-safe Base64 random token
+    #
+    # Encodes `SecureRandom.bytes(bytes)` with URL-safe Base64 and no padding.
+    # Useful for session IDs, one-time tokens, and CSRF values that must be safe
+    # to pass in URLs and cookies.
+    #
+    # @param bytes [Integer] number of random bytes to generate (default: 32)
+    # @return [String] URL-safe Base64 encoded random token (no padding)
+    # @raise [ArgumentError] if bytes is negative
+    def self.random(bytes: 32)
+      raise ArgumentError, 'bytes must be non-negative' if bytes.negative?
+
+      encode(SecureRandom.bytes(bytes))
     end
 
     # Decode a URL-safe Base64 string and write to a file.

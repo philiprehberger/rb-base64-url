@@ -505,6 +505,34 @@ RSpec.describe Philiprehberger::Base64Url do
     end
   end
 
+  describe '.random' do
+    it 'returns a URL-safe string decodable to 32 bytes by default' do
+      token = described_class.random
+      expect(described_class.decode(token).bytesize).to eq(32)
+    end
+
+    it 'produces the expected decoded byte length for a custom bytes count' do
+      token = described_class.random(bytes: 16)
+      expect(described_class.decode(token).bytesize).to eq(16)
+    end
+
+    it 'returns different values on successive calls' do
+      a = described_class.random
+      b = described_class.random
+      expect(a).not_to eq(b)
+    end
+
+    it 'raises ArgumentError for negative bytes' do
+      expect { described_class.random(bytes: -1) }.to raise_error(ArgumentError, /non-negative/)
+    end
+
+    it 'returns a string with no = padding and no + or / characters' do
+      token = described_class.random(bytes: 64)
+      expect(token).not_to include('=')
+      expect(token).not_to match(%r{[+/]})
+    end
+  end
+
   describe 'roundtrip' do
     it 'roundtrips simple strings' do
       %w[hello test 123 foo-bar].each do |str|
