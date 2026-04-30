@@ -78,6 +78,21 @@ module Philiprehberger
       result.zero?
     end
 
+    # Calculate the unpadded URL-safe Base64 string length for `bytes` bytes of input.
+    #
+    # Inverse of {.byte_length}: given a planned input size, returns the
+    # number of characters the encoded token will use without computing it.
+    # Useful for token sizing and buffer allocation.
+    #
+    # @param bytes [Integer] number of input bytes
+    # @return [Integer] length of the unpadded URL-safe Base64 encoding
+    # @raise [ArgumentError] if bytes is negative
+    def self.encoded_length(bytes)
+      raise ArgumentError, 'bytes must be non-negative' if bytes.negative?
+
+      ((bytes * 4) + 2) / 3
+    end
+
     # Calculate the decoded byte length from an encoded string without decoding.
     #
     # @param encoded [String] URL-safe Base64 string

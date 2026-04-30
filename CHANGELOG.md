@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.8.0] - 2026-04-30
+
+### Added
+- `Base64Url.encoded_length(bytes)` — number of characters in an unpadded URL-safe Base64 string for `n` bytes of input; inverse of `byte_length`.
+
 ## [0.7.0] - 2026-04-22
 
 ### Added

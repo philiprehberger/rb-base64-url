@@ -77,6 +77,17 @@ Philiprehberger::Base64Url.secure_compare(token_a, token_b) # => true/false
 Philiprehberger::Base64Url.byte_length("aGVsbG8gd29ybGQ") # => 11
 ```
 
+### Encoded Size
+
+Pre-compute the unpadded URL-safe Base64 length for `n` input bytes without
+encoding — useful for token sizing and buffer allocation.
+
+```ruby
+Philiprehberger::Base64Url.encoded_length(0)   # => 0
+Philiprehberger::Base64Url.encoded_length(16)  # => 22  (UUID)
+Philiprehberger::Base64Url.encoded_length(32)  # => 43  (default token)
+```
+
 ### File Helpers
 
 ```ruby
@@ -129,6 +140,7 @@ Philiprehberger::Base64Url.decode_uuid(token)
 | `.valid?(data)` | Check if a string is valid URL-safe Base64 |
 | `.secure_compare(a, b)` | Constant-time comparison of two strings |
 | `.byte_length(encoded)` | Calculate decoded byte count without decoding |
+| `.encoded_length(bytes)` | Length of the unpadded URL-safe Base64 encoding for `n` bytes of input |
 | `.encode_file(path, padding: false)` | Encode a file's contents to URL-safe Base64 |
 | `.decode_to_file(encoded, path)` | Decode and write to a file |
 | `.to_std(data)` | Convert URL-safe Base64 to standard Base64 (adds `=` padding, swaps `-_` for `+/`) |

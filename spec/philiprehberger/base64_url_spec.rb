@@ -277,6 +277,46 @@ RSpec.describe Philiprehberger::Base64Url do
     end
   end
 
+  describe '.encoded_length' do
+    it 'returns 0 for 0 bytes' do
+      expect(described_class.encoded_length(0)).to eq(0)
+    end
+
+    it 'returns 2 for 1 byte' do
+      expect(described_class.encoded_length(1)).to eq(2)
+    end
+
+    it 'returns 3 for 2 bytes' do
+      expect(described_class.encoded_length(2)).to eq(3)
+    end
+
+    it 'returns 4 for 3 bytes' do
+      expect(described_class.encoded_length(3)).to eq(4)
+    end
+
+    it 'returns 22 for 16 bytes (UUID size)' do
+      expect(described_class.encoded_length(16)).to eq(22)
+    end
+
+    it 'matches the actual unpadded encoding length' do
+      [1, 2, 3, 5, 7, 16, 32, 100].each do |n|
+        actual = described_class.encode(SecureRandom.bytes(n)).length
+        expect(described_class.encoded_length(n)).to eq(actual)
+      end
+    end
+
+    it 'is the inverse of byte_length for valid sizes' do
+      [0, 1, 5, 16, 32].each do |n|
+        encoded = described_class.encode(SecureRandom.bytes(n))
+        expect(described_class.encoded_length(described_class.byte_length(encoded))).to eq(encoded.length)
+      end
+    end
+
+    it 'raises ArgumentError for negative input' do
+      expect { described_class.encoded_length(-1) }.to raise_error(ArgumentError)
+    end
+  end
+
   describe '.encode_file' do
     it 'encodes a file to URL-safe Base64' do
       file = Tempfile.new('test')
